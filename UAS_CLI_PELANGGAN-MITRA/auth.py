@@ -16,3 +16,11 @@ def login():
     print("Login gagal — username/password salah.")
     return None
 
+def register_demo(username, password, role="pelanggan", nama=None):
+    if username in USERS:
+        return False
+    USERS[username] = {"password": password, "role": role, "nama": nama or username}
+    if role not in ["pelanggan", "mitra"]:
+        print("Role tidak valid, harus 'pelanggan' atau 'mitra'.")
+        return False
+    return True
