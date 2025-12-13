@@ -1,3 +1,6 @@
+from utils import clear_screen, press_enter, safe_int, exit_program
+from auth import login, register_demo
+
 def menu_pelanggan(user):
     while True:
         clear_screen()
@@ -22,3 +25,38 @@ def menu_mitra(user):
         print("7. Olah Data (sorting/searching)")
         print("0. Logout")
         pilih = input("Pilih: ").strip()
+
+def main():
+    while True:
+        clear_screen()
+        print("=== FLAVOR OF ONE DAY (CLI) ===")
+        print("1. Login")
+        print("2. Register demo user (opsional)")
+        print("0. Keluar")
+        pilih = input("Pilih: ").strip()
+        if pilih == "1":
+            user = login()
+            if user:
+                if user["role"] == "pelanggan":
+                    menu_pelanggan(user)
+                elif user["role"] == "mitra":
+                    menu_mitra(user)
+        elif pilih == "2":
+            print("Register: buat user baru.")
+            u = input("Username baru: ").strip()
+            p = input("Password: ").strip()
+            role = input("Role (pelanggan/mitra): ").strip() or "pelanggan"
+            nama = input("Nama lengkap: ").strip() or u
+            ok = register_demo(u,p,role,nama)
+            if ok:
+                print("User berhasil terdaftar. Gunakan menu Login.")
+            else:
+                print("Username sudah ada.")
+            press_enter()
+        elif pilih == "0":
+            exit_program()
+        else:
+            print("Pilihan tidak valid.")
+            press_enter()
+
+
