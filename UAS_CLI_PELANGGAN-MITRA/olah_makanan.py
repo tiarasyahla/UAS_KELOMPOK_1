@@ -42,22 +42,39 @@ def menu_olah_makanan():
                 print(hasil[["nama","restoran","kalori","harga"]].to_string(index=False))
             input("\nENTER untuk kembali...")
         elif pilih == "4":
-            harga_arr = np.array(df["harga"].fillna(0).astype(int).tolist())
-            print("Array harga:", harga_arr)
-            print("Sorting (numpy):", np.sort(harga_arr))
-            cari = input("Masukkan harga yang dicari (kosong untuk skip): ").strip()
-            if cari:
-                try:
-                    val = int(cari)
-                    idx = np.where(harga_arr == val)[0]
-                    if idx.size:
-                        print("Harga ditemukan pada index (array):", idx.tolist())
-                    else:
-                        print("Harga tidak ditemukan.")
-                except:
-                    print("Input bukan angka.")
+            print("\n=== Cari Makanan Berdasarkan Harga ===")
+
+            # Ambil data harga sebagai NumPy array
+            harga_arr = np.array(df["harga"].fillna(0).astype(int))
+
+            cari = input("Masukkan harga yang ingin dicari (Rp): ").strip()
+            if not cari:
+                print("Pencarian dibatalkan.")
+                input("\nENTER untuk kembali...")
+                continue
+
+            if not cari.isdigit():
+                print("Harga harus berupa angka.")
+                input("\nENTER untuk kembali...")
+                continue
+
+            target = int(cari)
+
+            # Cari index menggunakan NumPy
+            idx = np.where(harga_arr == target)[0]
+
+            if idx.size == 0:
+                print(f"Tidak ada makanan dengan harga Rp{target}.")
+            else:
+                print(f"\nMakanan dengan harga Rp{target}:")
+                hasil = df.iloc[idx]
+                print(hasil[["nama", "restoran", "kalori", "harga"]]
+                    .to_string(index=False))
+
             input("\nENTER untuk kembali...")
+            
         elif pilih == "0":
             break
         else:
             print("Pilihan tidak valid.")
+
