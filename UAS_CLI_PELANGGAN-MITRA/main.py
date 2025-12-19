@@ -1,10 +1,9 @@
-# main.py
 from utils import clear_screen, press_enter, safe_int, exit_program
-from auth import USERS, login, register_user, valid_username, valid_password, valid_role, valid_name
+from auth import login, register_user, valid_username, valid_password, valid_role, valid_name, load_users
 from rekomendasi_makanan import menu_rekomendasi, print_hasil, rekomendasi_terbaik
 from olah_makanan import menu_olah_makanan
 from manajemen_mitra import lihat_data, tambah_data, hapus_data, update_data, reload_csv
-from pembayaran import simulasi_pembayaran
+from transaksi import order_makanan
 from database_makanan import load_makanan
 import pandas as pd
 
@@ -20,7 +19,11 @@ def menu_pelanggan(user):
         pilih = input("Pilih: ").strip()
 
         if pilih == "1":
-            print(f"\nProfil: {user}")
+            clear_screen()
+            print("=== PROFIL PELANGGAN ===")
+            print(f"Nama     : {user['nama']}")
+            print(f"Username : {user['username']}")
+            print("========================")
             press_enter()
         elif pilih == "2":
             df = load_makanan()
@@ -32,51 +35,7 @@ def menu_pelanggan(user):
         elif pilih == "3":
             menu_rekomendasi()
         elif pilih == "4":
-            df = load_makanan()
-            if df.empty:
-                print("Belum ada makanan.")
-                press_enter()
-                continue
-            print(df[["nama","restoran","kalori","harga"]].to_string(index=True))
-            pilih_idx = input("Masukkan index makanan yang ingin dipesan (pisah koma untuk beberapa): ").strip()
-            if not pilih_idx:
-                continue
-            try:
-                indices = [int(x.strip()) for x in pilih_idx.split(",")]
-            except:
-                print("Input index tidak valid.")
-                press_enter()
-                continue
-            order_lines = []
-            total = 0
-            for idx in indices:
-                if idx in df.index:
-                    qty = safe_int(input(f"Jumlah untuk '{df.at[idx,'nama']}' : "), 1)
-                    harga = int(df.at[idx,'harga'])
-                    subtotal = harga * qty
-                    order_lines.append((df.at[idx,'nama'], df.at[idx,'restoran'], qty, harga, subtotal))
-                    total += subtotal
-                else:
-                    print("Index", idx, "tidak ada, diabaikan.")
-            if not order_lines:
-                print("Tidak ada item valid dipesan.")
-                press_enter()
-                continue
-            print("\n=== Ringkasan Order ===")
-            for ln in order_lines:
-                print(f"{ln[0]} ({ln[1]}) x{ln[2]} - Rp{ln[4]}")
-            print("Total: Rp", total)
-            konfirm = input("Lanjut ke pembayaran? (y/n): ").strip().lower()
-            if konfirm == "y":
-                sukses = simulasi_pembayaran(total)
-                if sukses:
-                    print("Order selesai — terima kasih.")
-                else:
-                    print("Pembayaran gagal.")
-                press_enter()
-            else:
-                print("Order dibatalkan.")
-                press_enter()
+            order_makanan()
         elif pilih == "0":
             break
         else:
@@ -98,7 +57,11 @@ def menu_mitra(user):
         pilih = input("Pilih: ").strip()
 
         if pilih == "1":
-            print(f"\nProfil: {user}")
+            clear_screen()
+            print("=== PROFIL MITRA ===")
+            print(f"Nama     : {user['nama']}")
+            print(f"Username : {user['username']}")
+            print("========================")
             press_enter()
         elif pilih == "2":
             lihat_data()
@@ -118,49 +81,119 @@ def menu_mitra(user):
             print("Pilihan tidak valid.")
             press_enter()
 
+def menu_admin(user):
+    while True:
+        clear_screen()
+        print(f"=== ADMIN: {user['nama']} ===")
+        print("1. Lihat Semua User")
+        print("2. Tambah Admin")
+        print("0. Logout")
+        pilih = input("Pilih: ").strip()
+
+        if pilih == "1":
+            users = load_users()
+            for u, d in users.items():
+                print(f"{u} | {d['role']} | {d['nama']}")
+            press_enter()
+
+        elif pilih == "2":
+            print("\n=== TAMBAH ADMIN ===")
+            username = input_username()
+            if not username:
+                continue
+            password = input_password()
+            nama = input_nama()
+
+            success = register_user(
+                username,
+                password,
+                "admin",
+                nama,
+                allow_admin=True
+            )
+
+            print("Admin berhasil ditambahkan." if success else "Gagal menambah admin.")
+            press_enter()
+
+        elif pilih == "0":
+            break
 
 def input_username():
-    while True:
+    kesempatan = 3
+    for i in range (0,3):
+        kesempatan = kesempatan-1
         username = input("Username: ").strip()
         if not username:
-            print("Username tidak boleh kosong.")
+            if kesempatan > 0:
+                print(f"Username tidak boleh kosong (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         elif not valid_username(username):
-            print("Username harus alfanumerik.")
-        elif username in USERS:
-            print("Username sudah terdaftar.")
+            if kesempatan > 0:
+                print(f"Username harus alfanumerik (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         else:
-            return username
+            users = load_users()
+            if username in users:
+                print("Username sudah terdaftar.")
+                break
+            else:
+                return username
 
 def input_password():
-    while True:
+    kesempatan = 3
+    for i in range (0,3):
+        kesempatan = kesempatan-1
         password = input("Password: ").strip()
         if not password:
-            print("Password tidak boleh kosong.")
+            if kesempatan > 0:
+                print(f"Password tidak boleh kosong (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         elif not valid_password(password):
-            print("Password minimal 8 karakter dan kombinasi huruf & angka.")
+            if kesempatan > 0:
+                print(f"Password minimal 8 karakter dan kombinasi huruf & angka (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         else:
             return password
 
 def input_role():
-    while True:
-        role = input("Role (pelanggan/mitra): ").strip()
+    kesempatan = 3
+    for i in range (0,3):
+        kesempatan = kesempatan-1
+        role = input("Role (Pelanggan/Mitra): ").strip().lower()
         if not role:
-            print("Role tidak boleh kosong.")
-        elif not valid_role(role):
-            print("Role harus 'pelanggan' atau 'mitra'.")
+            if kesempatan > 0:
+                print(f"Role tidak boleh kosong (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
+        elif role not in ["pelanggan", "mitra"]:
+            if kesempatan > 0:
+                print(f"Role harus 'Pelanggan' atau 'Mitra' (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         else:
             return role
 
 def input_nama():
-    while True:
+    kesempatan = 3
+    for i in range (0,3):
+        kesempatan = kesempatan-1
         nama = input("Nama lengkap: ").strip()
         if not nama:
-            print("Nama tidak boleh kosong.")
+            if kesempatan > 0:
+                print(f"Password tidak boleh kosong (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         elif not valid_name(nama):
-            print("Nama harus mengandung huruf.")
+            if kesempatan > 0:
+                print(f"Nama harus mengandung huruf (sisa kesempatan: {kesempatan}).")
+            else:
+                print("Registrasi gagal.")
         else:
             return nama
-
 
 def main():
     while True:
@@ -184,27 +217,33 @@ def main():
             clear_screen()
             print("=== REGISTER USER ===")
 
-            username = input_username()
-            password = input_password()
-            role = input_role()
-            nama = input_nama()
+            while True:
+                username = input_username() 
+                if not username:
+                    break
+                password = input_password()
+                if not password:
+                    break
+                role = input_role()
+                if not role:
+                    break
+                nama = input_nama()
+                if not nama:
+                    break
 
-            success = register_user(username, password, role, nama)
-
-            if success:
-                print("Registrasi berhasil. Silakan login.")
-            else:
-                print("Registrasi gagal.")
-
+                success = register_user(username, password, role, nama)
+                if success:
+                    print("Registrasi berhasil. Silakan login.")
+                    break
             press_enter()
 
         elif pilih == "0":
             exit_program()
-
         else:
             print("Pilihan tidak valid.")
             press_enter()
 
 if __name__ == "__main__":
     main()
+
 
