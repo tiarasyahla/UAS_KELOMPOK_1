@@ -81,6 +81,43 @@ def menu_mitra(user):
             print("Pilihan tidak valid.")
             press_enter()
 
+def menu_admin(user):
+    while True:
+        clear_screen()
+        print(f"=== ADMIN: {user['nama']} ===")
+        print("1. Lihat Semua User")
+        print("2. Tambah Admin")
+        print("0. Logout")
+        pilih = input("Pilih: ").strip()
+
+        if pilih == "1":
+            users = load_users()
+            for u, d in users.items():
+                print(f"{u} | {d['role']} | {d['nama']}")
+            press_enter()
+
+        elif pilih == "2":
+            print("\n=== TAMBAH ADMIN ===")
+            username = input_username()
+            if not username:
+                continue
+            password = input_password()
+            nama = input_nama()
+
+            success = register_user(
+                username,
+                password,
+                "admin",
+                nama,
+                allow_admin=True
+            )
+
+            print("Admin berhasil ditambahkan." if success else "Gagal menambah admin.")
+            press_enter()
+
+        elif pilih == "0":
+            break
+
 def input_username():
     kesempatan = 3
     for i in range (0,3):
@@ -208,4 +245,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
