@@ -1,7 +1,73 @@
-nama,restoran,kalori,harga
-Nasi Goreng,Warung Makmur,450,15000
-Ayam Bakar,RM Nusantara,300,18000
-Salad Sayur,GreenBite,120,10000
-Roti Bakar,Kedai Kecil,200,8000
-Tempe Goreng,Warung Padang,80,3000
-mie ayam,ayam,300,15000
+nama,restoran,kalori,harga,stok
+Ayam Bakar Madu,RM Nusantara,320,20000,30
+Ayam Goreng Krispi,Warung Makmur,280,9000,40
+Nasi Goreng Spesial,Warung Makmur,420,15000,15
+Sate Ayam,Sate Madura Pak Joko,210,15000,25
+Soto Ayam Kampung,Soto Lamongan Cak Har,230,16000,20
+Bakso Urat,Bakso Solo Mantap,300,15000,35
+Mie Goreng Aceh,Mie Aceh Bang Jali,450,18000,18
+Mie Rebus Aceh,Mie Aceh Bang Jali,380,17000,20
+Rendang Daging,RM Padang Sederhana,480,26000,12
+Ayam Gulai,RM Padang Sederhana,350,23000,14
+Ikan Bakar Kecap,Pondok Laut Bahari,250,21000,10
+Gurame Asam Manis,Pondok Gurame Asri,360,26000,8
+Capcay Goreng,Depot Sehat Jaya,200,14000,22
+Kwetiau Siram,Kwetiau Medan Lezat,390,19000,16
+Nasi Uduk Komplit,Nasi Uduk Kebon Kacang,350,13000,30
+Lontong Sayur Padang,Lontong Medan Pagi,340,12000,26
+Pempek Lenjer,Pempek Palembang Asli,280,15000,20
+Siomay Komplit,Siomay Mang Ade,320,15000,24
+Tahu Crispy,Tahu Gejrot Cirebon,180,9000,45
+Es Jeruk,Warung Makmur,80,6000,50
+Ayam Penyet,Sambal Ijo Bu Rina,410,17000,28
+Lele Goreng,Sambal Ijo Bu Rina,330,14000,20
+Nasi Campur Bali,Warung Bali Nikmat,460,22000,18
+Bebek Goreng,Bebek Sinjay Cabang Kota,520,28000,10
+Rawon Daging,Rawon Setan,390,20000,16
+Tahu Telor,Tahu Telor Pak Jayen,270,12000,22
+Gado-Gado,Gado-Gado Bu Tini,300,13000,25
+Pecel Madiun,Pecel Bu Sri,280,11000,30
+Sop Buntut,Sop Buntut Istana,430,30000,8
+Sop Iga,Sop Iga Nusantara,400,27000,10
+Nasi Kuning,Nasi Kuning Pagi Ceria,330,12000,35
+Nasi Liwet,Nasi Liwet Solo Asli,360,15000,20
+Ayam Rica-Rica,RM Manado Rasa,370,20000,14
+Cakalang Fufu,RM Manado Rasa,310,22000,12
+Mie Ayam,Mie Ayam Bakso Pak Min,350,12000,40
+Bakso Telur,Bakso Pak Min,340,14000,32
+Bakmi Jawa,Bakmi Mbah Gito,420,20000,15
+Gudeg Ayam,Warung Gudeg Yu Djum,390,18000,18
+Gudeg Krecek,Warung Gudeg Yu Djum,420,20000,14
+Sate Kambing,Sate Kambing Pak Hadi,480,30000,10
+Tongseng Kambing,Sate Kambing Pak Hadi,500,32000,8
+Martabak Telur,Martabak Bang Odi,550,25000,12
+Martabak Manis,Martabak Bang Odi,480,22000,15
+Roti Bakar,Roti Bakar 88,320,12000,20
+Pisang Goreng,Pisang Goreng Coklat Keju,280,10000,30
+Cireng,Cireng Bandung Juara,220,8000,40
+Seblak Komplit,Seblak Teh Nia,400,15000,25
+Batagor,Batagor Kingsley,350,15000,22
+Nasi Goreng Seafood,Nasi Goreng 99,430,19000,18
+Nasi Goreng Kampung,Nasi Goreng 99,380,15000,20
+Mie Tek-Tek,Mie Tek-Tek Pak Kumis,410,14000,25
+Sate Taichan,Sate Taichan Senayan,290,18000,20
+Chicken Katsu,Katsu Express,450,22000,15
+Chicken Teriyaki,Katsu Express,420,21000,18
+Beef Yakiniku,Yakiniku Bowl,480,28000,12
+Salad Sayur,Healthy Kitchen,180,14000,20
+Sup Ayam,Healthy Kitchen,220,15000,18
+Smoothie Buah,Healthy Kitchen,160,13000,25
+Es Kopi Susu,Kopi Kenangan,180,18000,40
+Americano,Kopi Kenangan,10,15000,35
+Cappuccino,Kopi Kenangan,120,20000,30
+Teh Tarik,Teh Tarik Bang Ali,190,10000,28
+Roti Canai,Roti Canai Bang Ali,300,12000,22
+Nasi Kebuli Ayam,Kebuli Abah,520,28000,10
+Nasi Briyani Ayam,Briyani House,550,30000,8
+Kebab Ayam,Kebab Turki Baba Rafi,360,15000,25
+Burger Beef,Burger Bros,500,25000,15
+Kentang Goreng,Burger Bros,320,12000,20
+Hot Dog,Street Food Corner,380,14000,18
+Donat Gula,Donat Manis,260,8000,35
+Brownies Coklat,Brownies Amanda,420,20000,16
+Es Krim Vanila,Ice Cream Corner,210,10000,30
