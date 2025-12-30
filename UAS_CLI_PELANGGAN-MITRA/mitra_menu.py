@@ -1,103 +1,124 @@
-import pandas as pd
-from database_makanan import load_makanan, save_makanan, reload_from_csv
-from utils import safe_int
+from database_makanan import load_makanan, save_makanan, tambah_makanan, update_makanan, hapus_makanan
+from utils import press_enter, clear_screen
+import csv
+from pathlib import Path
+from auth import get_profil_toko, edit_profil_toko
 
-def lihat_data():
-    df = load_makanan()
-    if df.empty:
-        print("\nBelum ada data makanan.")
-    else:
-        df_view = df[["nama","restoran","kalori","harga"]].copy()
-        df_view.index = range(1, len(df_view) + 1)
-        print(df_view.to_string(index=True))
-    input("\nENTER untuk kembali...")
+PENJUALAN_CSV = Path("penjualan.csv")
 
-def tambah_data():
-    print("\n=== Tambah Data Makanan (Mitra) ===")
+def profil_toko(user):
+    clear_screen()
+    profil = get_profil_toko(user["username"])
+    
+    print("=== PROFIL TOKO ===")
+    print(f"Nama Toko : {user['toko']}")
+    print(f"Pemilik   : {user['nama']}")
+
+    if profil["lokasi"]:
+        print(f"Lokasi          : {profil['lokasi']}")
+        print(f"Jam Operasional : {profil['jam_operasional']}")
+        if profil["deskripsi"]:
+            print(f"Deskripsi       : {profil['deskripsi']}")
+
+    print("\n1. Lengkapi / Edit Profil Toko")
+    print("2. Kembali")
+    sub = input("Pilih: ").strip()
+
+    if sub == "1":
+        clear_screen()
+        print("=== EDIT PROFIL TOKO ===")
+
+        lokasi = input(f"Lokasi [{profil['lokasi']}]: ") or profil["lokasi"]
+        jam = input(f"Jam Operasional [{profil['jam_operasional']}]: ") or profil["jam_operasional"]
+        desk = input(f"Deskripsi [{profil['deskripsi']}]: ") or profil["deskripsi"]
+
+        edit_profil_toko(user["username"], {
+            "lokasi": lokasi,
+            "jam_operasional": jam,
+            "deskripsi": desk
+        })
+
+        print("\nProfil toko berhasil diperbarui.")
+    press_enter()
+
+def kelola_menu(user):
     while True:
-        nama = input("Nama makanan   : ").strip()
-        if nama:
-            break
-        print("Nama makanan tidak boleh kosong.")
+        clear_screen()
+        df = load_makanan().reset_index(drop=True)
+        toko_df = df[df["restoran"] == user["toko"]].copy()
+        toko_df["__idx"] = toko_df.index
+        toko_df = toko_df.reset_index(drop=True)
 
-    while True:
-        restoran = input("Nama restoran  : ").strip()
-        if restoran:
-            break
-        print("Nama restoran tidak boleh kosong.")
+        print(toko_df[["nama","kalori","harga","stok"]].assign(no=range(1, len(toko_df) + 1))[["no","nama","kalori","harga","stok"]].to_string(index=False))
+        print("\n1. Tambah Menu")
+        print("2. Update Menu")
+        print("3. Hapus Menu")
+        print("0. Kembali")
 
-    while True:
-        kalori = input("Kalori (angka) : ").strip()
-        if kalori.isdigit():
-            kalori = int(kalori)
-            break
-        print("Kalori harus berupa angka dan tidak boleh kosong.")
+        pilih = input("Pilih: ").strip()
 
-    while True:
-        harga = input("Harga (angka)  : ").strip()
-        if harga.isdigit():
-            harga = int(harga)
-            break
-        print("Harga harus berupa angka dan tidak boleh kosong.")
-        
-    df = load_makanan()
-    new = {"nama": nama, "restoran": restoran, "kalori": kalori, "harga": harga}
-    df = pd.concat([df, pd.DataFrame([new])], ignore_index=True)
-    df.to_csv("makanan.csv", index=False)
-    print("Data berhasil ditambahkan.")
-    input("\nENTER...")
+        if pilih == "1":
+            
+            nama = input("Nama makanan: ").strip()
+            for kesempatan in range(3):
+                if nama:
+                    if nama in toko_df["nama"].values:
+                        print(f"Nama makanan '{nama}' sudah ada di toko Anda! (sisa kesempatan: {2 - kesempatan})")
+                        if kesempatan < 2:
+                            nama = input("Nama makanan: ").strip()
+                        else:
+                            print("Penambahan menu dibatalkan.")
+                            press_enter()
+                            return
+                    break
+                else:
+                    print(f"Nama makanan tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        nama = input("Nama makanan: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+                    
+            kalori = input("Kalori: ").strip()
+            for kesempatan in range(3):
+                if kalori:
+                    break
+                else:
+                    print(f"Kalori tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        kalori = input("Kalori: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+                        
+            harga = input("Harga: ").strip()
+            for kesempatan in range(3):
+                if harga:
+                    break
+                else:
+                    print(f"Harga tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        harga = input("Harga: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
 
-def hapus_data():
-    df = load_makanan()
-    print(df[["nama","restoran","kalori","harga"]].to_string(index=True))
-    idx = input("Masukkan index baris yang akan dihapus (atau kosong): ").strip()
-    if idx == "":
-        return
-    try:
-        idx = int(idx)
-        if idx in df.index:
-            df = df.drop(index=idx)
-            save_makanan(df.reset_index(drop=True))
-            print("Baris dihapus.")
-        else:
-            print("Index tidak ditemukan.")
-    except:
-        print("Input tidak valid.")
-    input("\nENTER...")
+            stok = input("Stok: ").strip()
+            for kesempatan in range(3):
+                if stok:
+                    break
+                else:
+                    print(f"Stok tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        stok = input("Stok: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
 
-def update_data():
-    df = load_makanan()
-    print(df[["nama","restoran","kalori","harga"]].to_string(index=True))
-    idx = input("Masukkan index baris yang akan diupdate (atau kosong): ").strip()
-    if idx == "":
-        return
-    try:
-        idx = int(idx)
-        if idx in df.index:
-            row = df.loc[idx].to_dict()
-            print("Kosongkan input untuk mempertahankan nilai lama.")
-            nama = input(f"Nama ({row['nama']}): ").strip() or row['nama']
-            restoran = input(f"Restoran ({row['restoran']}): ").strip() or row['restoran']
-            kalori = input(f"Kalori ({row['kalori']}): ").strip()
-            harga = input(f"Harga ({row['harga']}): ").strip()
-            kalori = safe_int(kalori, int(row['kalori']))
-            harga = safe_int(harga, int(row['harga']))
-            df.at[idx, 'nama'] = nama
-            df.at[idx, 'restoran'] = restoran
-            df.at[idx, 'kalori'] = kalori
-            df.at[idx, 'harga'] = harga
-            save_makanan(df)
-            print("Data berhasil diupdate.")
-        else:
-            print("Index tidak ditemukan.")
-    except Exception as e:
-        print("Terjadi error:", e)
-    input("\nENTER...")
-
-def reload_csv():
-    print("Reloading dari file CSV...")
-    df = reload_from_csv()
-    print("Reload selesai. Jumlah baris:", len(df))
-    input("\nENTER...")
-
-
+            if kalori.isdigit() and harga.isdigit() and stok.isdigit():
+                tambah_makanan(nama, user["toko"], int(kalori), int(harga), int(stok))
+            press_enter()
