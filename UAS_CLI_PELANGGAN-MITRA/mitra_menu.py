@@ -122,3 +122,109 @@ def kelola_menu(user):
             if kalori.isdigit() and harga.isdigit() and stok.isdigit():
                 tambah_makanan(nama, user["toko"], int(kalori), int(harga), int(stok))
             press_enter()
+
+elif pilih == "2":
+            idx = input("Index makanan: ").strip()
+            if idx.isdigit():
+                idx = int(idx) - 1
+                if idx < 0 or idx >= len(df):
+                    print("Index tidak ditemukan.")
+                    press_enter()
+                    return
+            else:
+                print("Index tidak valid, masukkan angka.")
+                press_enter()
+                return
+                
+            nama = input("Nama baru: ").strip()
+            for kesempatan in range(3):
+                if nama:
+                    if nama in toko_df["nama"].values and nama != toko_df.at[idx, "nama"]:
+                        print(f"Nama makanan '{nama}' sudah ada di toko Anda! (sisa kesempatan: {2 - kesempatan})")
+                        if kesempatan < 2:
+                            nama = input("Nama makanan: ").strip()
+                        else:
+                            print("Penambahan menu dibatalkan.")
+                            press_enter()
+                            return
+                    break
+                else:
+                    print(f"Nama makanan tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        nama = input("Nama makanan: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+                    
+            kalori = input("Kalori baru: ").strip()
+            for kesempatan in range(3):
+                if kalori:
+                    break
+                else:
+                    print(f"Kalori tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        kalori = input("Kalori: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+                        
+            harga = input("Harga baru: ").strip()
+            for kesempatan in range(3):
+                if harga:
+                    break
+                else:
+                    print(f"Harga tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        harga = input("Harga: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+                    
+            stok = input("Stok baru: ").strip()
+            for kesempatan in range(3):
+                if stok:
+                    break
+                else:
+                    print(f"Stok tidak boleh kosong! (sisa kesempatan: {2 - kesempatan})")
+                    if kesempatan < 2:
+                        stok = input("Stok: ").strip()
+                    else:
+                        print("Penambahan menu dibatalkan.")
+                        press_enter()
+                        return
+
+            update_makanan(
+                idx,
+                nama if nama else None,
+                int(kalori) if kalori.isdigit() else None,
+                int(harga) if harga.isdigit() else None,
+                int(stok) if stok.isdigit() else None
+            )
+            press_enter()
+
+        elif pilih == "3":
+            idx = input("Index makanan: ").strip()
+
+            if idx.isdigit():
+                idx = int(idx) - 1
+
+                if idx < 0 or idx >= len(toko_df):
+                    print("Index tidak ditemukan.")
+                    press_enter()
+                    return
+
+                baris_asli = toko_df.loc[idx, "__idx"]
+                df = df.drop(baris_asli).reset_index(drop=True)
+
+                save_makanan(df)
+                press_enter()
+            else:
+                print("Index tidak valid, masukkan angka.")
+                press_enter()
+                return
+
+        elif pilih == "0":
+            break
