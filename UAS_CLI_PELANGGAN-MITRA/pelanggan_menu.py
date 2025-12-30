@@ -63,3 +63,50 @@ def menu_pelanggan(user):
         
                 print("\nData diri berhasil diperbarui.")
                 press_enter()
+
+elif pilih == "2":
+            clear_screen()
+            df = load_makanan()
+            if df.empty:
+                print("Belum ada data makanan.")
+            else:
+                print(df[["nama","restoran","kalori","harga"]].assign(no=range(1, len(df) + 1))[["no","nama","restoran","kalori","harga"]].to_string(index=False))
+            print("\n1. Cari makanan")
+            print("2. Kembali")
+            sub = input("Pilih: ").strip()
+            if sub == "1":
+                keyword = input("Masukkan nama makanan yang dicari: ").strip()
+                
+                if not keyword:
+                    print("Kata kunci pencarian tidak boleh kosong.")
+                    press_enter()
+                else:
+                    hasil = linear_search_makanan(df, keyword)
+    
+                if hasil.empty:
+                    print("Makanan tidak ditemukan.")
+                else:
+                    print("\nHasil Pencarian:")
+                    print(
+                        hasil[["nama", "restoran", "kalori", "harga"]]
+                        .assign(no=range(1, len(hasil) + 1))
+                        [["no", "nama", "restoran", "kalori", "harga"]]
+                        .to_string(index=False)
+                    )
+            
+            press_enter()
+
+        elif pilih == "3":
+            clear_screen()
+            menu_rekomendasi()
+
+        elif pilih == "4":
+            clear_screen()
+            order_makanan()
+
+        elif pilih == "0":
+            break
+
+        else:
+            print("Pilihan tidak valid.")
+            press_enter()
