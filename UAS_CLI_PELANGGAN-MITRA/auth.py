@@ -198,6 +198,112 @@ def register_user(username, password, role, nama, toko="", allow_admin=False):
     save_all_users(users)
     return True
 
+# Fungsi buat edit profil pengguna 
+def get_profil_dasar(username):
+    with open("user.csv", "r") as file:
+        for line in file:
+            data = line.strip().split(",")
+            if data[0] == username:
+                return {
+                    "username": data[0],
+                    "nama": data[3]
+                }
+
+def get_profil_lengkap(username):
+    with open("user.csv", "r") as file:
+        for line in file:
+            data = line.strip().split(",")
+            while len(data) < 10:
+                data.append("")
+            if data[0] == username:
+                return {
+                    "email": data[6],
+                    "no_hp": data[7],
+                    "alamat": data[8],
+                    "jenis_kelamin": data[9]
+                }
+
+def edit_profil_lengkap(username, profil_baru):
+    users = []
+
+    with open("user.csv", "r") as file:
+        for line in file:
+            data = line.strip().split(",")
+            while len(data) < 10:
+                data.append("")
+            if data[0] == username:
+                data[6] = profil_baru["email"]
+                data[7] = profil_baru["no_hp"]
+                data[8] = profil_baru["alamat"]
+                data[9] = profil_baru["jenis_kelamin"]
+            users.append(data)
+
+    with open("user.csv", "w") as file:
+        for u in users:
+            file.write(",".join(u) + "\n")
+            
+def get_user_by_username(username):
+    with open("user.csv", "r") as file:
+        for line in file:
+            data = line.strip().split(",")
+            if data[0] == username:
+                return {
+                    "username": data[0],
+                    "password": data[1],
+                    "role": data[2],
+                    "nama": data[3],
+                    "toko": data[4],
+                    "status": data[5]
+                }
+
+
+# Fungsi buat edit profil mitra
+def get_profil_toko(username):
+    if not os.path.exists(TOKO_FILE):
+        return {
+            "lokasi": "",
+            "jam_operasional": "",
+            "deskripsi": ""
+        }
+
+    with open(TOKO_FILE, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["username"] == username:
+                return row
+
+    return {
+        "lokasi": "",
+        "jam_operasional": "",
+        "deskripsi": ""
+    }
+
+
+def edit_profil_toko(username, data_baru):
+    rows = []
+    found = False
+
+    if os.path.exists(TOKO_FILE):
+        with open(TOKO_FILE, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row["username"] == username:
+                    row.update(data_baru)
+                    found = True
+                rows.append(row)
+
+    if not found:
+        rows.append({
+            "username": username,
+            **data_baru
+        })
+
+    with open(TOKO_FILE, "w", newline="", encoding="utf-8") as f:
+        fieldnames = ["username", "lokasi", "jam_operasional", "deskripsi"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+        
 def set_user_status(username, status):
     users = load_users()
     if username not in users:
@@ -225,5 +331,6 @@ def valid_role(role):
 
 def valid_name(nama):
     return any(c.isalpha() for c in nama)
+
 
 
