@@ -1,1 +1,5 @@
-username,password,role,nama
+username,password,role,nama,toko,status,email,no_hp,alamat,jenis_kelamin
+aziz,23122312a,pelanggan,aziza,,aktif,,,,
+mitra1,mitra123a,mitra,Budi,Warung Makmur,aktif,,,,
+admin,admin1234,admin,Admin Sistem,,aktif,,,,
+tiara,tia2508160,pelanggan,Tiara SM,,aktif,tiarasyahla@gmail.com,085314845051,Bandung,Perempuan
