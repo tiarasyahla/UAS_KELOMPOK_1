@@ -81,6 +81,43 @@ def menu_mitra(user):
             print("Pilihan tidak valid.")
             press_enter()
 
+def menu_admin(user):
+    while True:
+        clear_screen()
+        print(f"=== ADMIN: {user['nama']} ===")
+        print("1. Lihat Semua User")
+        print("2. Tambah Admin")
+        print("0. Logout")
+        pilih = input("Pilih: ").strip()
+
+        if pilih == "1":
+            users = load_users()
+            for u, d in users.items():
+                print(f"{u} | {d['role']} | {d['nama']}")
+            press_enter()
+
+        elif pilih == "2":
+            print("\n=== TAMBAH ADMIN ===")
+            username = input_username()
+            if not username:
+                continue
+            password = input_password()
+            nama = input_nama()
+
+            success = register_user(
+                username,
+                password,
+                "admin",
+                nama,
+                allow_admin=True
+            )
+
+            print("Admin berhasil ditambahkan." if success else "Gagal menambah admin.")
+            press_enter()
+
+        elif pilih == "0":
+            break
+
 def input_username():
     kesempatan = 3
     for i in range (0,3):
@@ -126,15 +163,15 @@ def input_role():
     kesempatan = 3
     for i in range (0,3):
         kesempatan = kesempatan-1
-        role = input("Role (pelanggan/mitra): ").strip()
+        role = input("Role (Pelanggan/Mitra): ").strip().lower()
         if not role:
             if kesempatan > 0:
                 print(f"Role tidak boleh kosong (sisa kesempatan: {kesempatan}).")
             else:
                 print("Registrasi gagal.")
-        elif not valid_role(role):
+        elif role not in ["pelanggan", "mitra"]:
             if kesempatan > 0:
-                print(f"Role harus 'pelanggan' atau 'mitra' (sisa kesempatan: {kesempatan}).")
+                print(f"Role harus 'Pelanggan' atau 'Mitra' (sisa kesempatan: {kesempatan}).")
             else:
                 print("Registrasi gagal.")
         else:
@@ -175,6 +212,8 @@ def main():
                     menu_pelanggan(user)
                 elif user["role"] == "mitra":
                     menu_mitra(user)
+                elif user["role"] == "admin":
+                    menu_admin(user)
 
         elif pilih == "2":
             clear_screen()
@@ -208,3 +247,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
