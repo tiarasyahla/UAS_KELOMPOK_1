@@ -1,11 +1,20 @@
-UAS_CLI_MITRA-USER/
-|
-├── auth.py
-├── database_makanan.py
-├── main.py
+UAS_CLI_MITRA_USER/
+│
+├── main.py                # router role
+│
+├── auth.py                # auth & role
+├── utils.py               # helper umum
+│
+├── pelanggan_menu.py      # UI pelanggan
+├── mitra_menu.py          # UI mitra
+├── admin_menu.py          # UI admin
+│
+├── rekomendasi_makanan.py # business logic
+├── transaksi.py           # business logic
+│
+├── database_makanan.py    # data access
+│
+├── user.csv
+├── profil_toko.csv
 ├── makanan.csv
-├── manajemen_mitra.py
-├── olah_makanan.py
-├── pembayaran.py
-├── rekomendasi_makanan.py
-├── utils.py
+├── penjualan.csv
