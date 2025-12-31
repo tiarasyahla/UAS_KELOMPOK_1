@@ -64,7 +64,7 @@ def menu_pelanggan(user):
                 print("\nData diri berhasil diperbarui.")
                 press_enter()
 
-elif pilih == "2":
+        elif pilih == "2":
             clear_screen()
             df = load_makanan()
             if df.empty:
