@@ -1,4 +1,5 @@
 from database_makanan import load_makanan
+from utils import press_enter, clear_screen
 import pandas as pd
 
 def rekomendasi_kalori(max_kalori=300):
@@ -22,7 +23,7 @@ def print_hasil(df, judul="Hasil"):
     if df is None or df.empty:
         print("Tidak ada rekomendasi tersedia.")
         return
-    print(df[["nama","restoran","kalori","harga"]].to_string(index=False))
+    print(df[["nama","restoran","kalori","harga"]].assign(no=range(1, len(df) + 1))[["no","nama","restoran","kalori","harga"]].to_string(index=False))
 
 def menu_rekomendasi():
     while True:
@@ -32,26 +33,51 @@ def menu_rekomendasi():
         print("3. Rekomendasi Terbaik")
         print("0. Kembali")
         pilih = input("Pilih: ").strip()
-        
+
         if pilih == "1":
-            batas = input("Batas kalori (default 300): ").strip()
-            batas = int(batas) if batas else 300
-            df = rekomendasi_kalori(batas)
+            clear_screen()
+            while True:
+                batas = input("Batas kalori (default 300): ").strip()
+                if batas.isdigit() or batas == "":
+                    break
+                else:
+                    print("Batas kalori harus berupa angka dan tidak boleh kosong!")
+            df = rekomendasi_kalori(int(batas)) if batas else rekomendasi_kalori()
             print_hasil(df, f"Kalori ≤ {batas}")
-            input("\nENTER...")
+            press_enter()
+            break
+            
         elif pilih == "2":
-            batas = input("Batas harga (default 10000): ").strip()
-            batas = int(batas) if batas else 10000
-            df = rekomendasi_harga(batas)
+            clear_screen()
+            while True:
+                batas = input("Batas harga (default 10000): ").strip()
+                if batas.isdigit() or batas == "":
+                    break
+                else:
+                    print("Batas harga harus berupa angka dan tidak boleh kosong!")
+            df = rekomendasi_harga(int(batas)) if batas else rekomendasi_harga()
             print_hasil(df, f"Harga ≤ Rp{batas}")
-            input("\nENTER...")
+            press_enter()
+            break
+            
         elif pilih == "3":
-            jumlah = input("Top berapa? (default 3): ").strip()
-            jumlah = int(jumlah) if jumlah else 3
-            df = rekomendasi_terbaik(jumlah)
+            clear_screen()
+            while True:
+                jumlah = input("Berapa banyak rekomendasi terbaik yang diinginkan? (default 3): ").strip()
+                if jumlah.isdigit() or jumlah == "":
+                    break
+                else:
+                    print("Jumlah harus berupa angka dan tidak boleh kosong!")
+            df = rekomendasi_terbaik(int(jumlah)) if jumlah else rekomendasi_terbaik()
             print_hasil(df, f"Top {jumlah} Terbaik")
-            input("\nENTER...")
+            press_enter()
+            break
+            
         elif pilih == "0":
             break
+        
         else:
+            clear_screen()
             print("Pilihan tidak valid!")
+            press_enter()
+            break
