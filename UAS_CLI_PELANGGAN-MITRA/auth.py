@@ -5,12 +5,14 @@ from utils import press_enter
 FILE_USER = "user.csv"
 TOKO_FILE = "profil_toko.csv"
 
+FIELDNAMES = ["username", "password", "role", "nama", "toko", "status"]
+
 def ensure_user_csv():
     if not os.path.exists(FILE_USER):
         with open(FILE_USER, mode="w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(FIELDNAMES)
-            
+
 def load_users():
     ensure_user_csv()
     users = {}
@@ -39,7 +41,6 @@ def save_all_users(users):
                 "toko": d.get("toko", ""),
                 "status": d.get("status", "aktif")
             })
-
 
 def input_username():
     for kesempatan in range(3):
@@ -119,6 +120,24 @@ def input_nama():
         else:
             return nama
 
+def input_toko():
+    for kesempatan in range(3):
+        toko = input("Toko: ").strip()
+        if not toko:
+            print(f"Toko tidak boleh kosong (sisa kesempatan: {2 - kesempatan}).")
+            if kesempatan == 2:
+                print("Registrasi gagal.")
+                press_enter()
+                return
+        elif not valid_name(toko):
+            print(f"Toko hanya boleh mengandung alfabet dan spasi (sisa kesempatan: {2 - kesempatan}).")
+            if kesempatan == 2:
+                print("Registrasi gagal.")
+                press_enter()
+                return
+        else:
+            return toko
+
 def login():
     while True:
         load_users()
@@ -181,13 +200,16 @@ def login():
             "status": user.get("status", "aktif")
         }
 
-
 def register_user(username, password, role, nama, toko="", allow_admin=False):
     users = load_users()
+
     if username in users:
         return False
+
     if role == "admin" and not allow_admin:
         return False
+        
+    print("Register berhasil, silakan Login.")
     users[username] = {
         "password": password,
         "role": role,
@@ -195,8 +217,10 @@ def register_user(username, password, role, nama, toko="", allow_admin=False):
         "toko": toko,
         "status": "aktif"
     }
+
     save_all_users(users)
     return True
+
 
 # Fungsi buat edit profil pengguna 
 def get_profil_dasar(username):
@@ -303,7 +327,8 @@ def edit_profil_toko(username, data_baru):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
-        
+
+
 def set_user_status(username, status):
     users = load_users()
     if username not in users:
@@ -331,6 +356,3 @@ def valid_role(role):
 
 def valid_name(nama):
     return any(c.isalpha() for c in nama)
-
-
-
