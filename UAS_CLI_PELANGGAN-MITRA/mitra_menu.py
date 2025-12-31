@@ -123,7 +123,7 @@ def kelola_menu(user):
                 tambah_makanan(nama, user["toko"], int(kalori), int(harga), int(stok))
             press_enter()
 
-elif pilih == "2":
+        elif pilih == "2":
             idx = input("Index makanan: ").strip()
             if idx.isdigit():
                 idx = int(idx) - 1
@@ -228,7 +228,6 @@ elif pilih == "2":
 
         elif pilih == "0":
             break
-
 
 def kelola_stok(user):
     clear_screen()
