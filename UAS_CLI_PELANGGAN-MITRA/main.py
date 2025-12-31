@@ -1,5 +1,6 @@
+
 from utils import clear_screen, press_enter, exit_program
-from auth import login, register_user, valid_username, valid_password, valid_name, input_nama, input_username, input_password, input_role
+from auth import login, register_user, valid_username, valid_password, valid_name, input_nama, input_username, input_password, input_role, input_toko
 from pelanggan_menu import menu_pelanggan
 from mitra_menu import menu_mitra
 from admin_menu import menu_admin
@@ -30,23 +31,21 @@ def main():
             print("=== REGISTER ===")
             username = input_username()
             if not username:
-                press_enter()
                 continue
             password = input_password()
             if not password:
-                press_enter()
                 continue
             nama = input_nama()
             if not nama:
-                press_enter()
                 continue
             role = input_role()
             if not role:
-                press_enter()
                 continue
             toko = ""
             if role == "mitra":
-                toko = input("Nama Toko: ")
+                toko = input_toko()
+                if not toko:
+                    continue
             if valid_username(username) and valid_password(password) and valid_name(nama):
                 register_user(username, password, role, nama, toko)
 
